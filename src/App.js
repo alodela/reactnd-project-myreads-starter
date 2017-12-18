@@ -15,6 +15,18 @@ class BooksApp extends React.Component {
     books: []
   }
 
+  onMoveToShelf = (book, toShelf) => {
+    this.setState((prevState) => {
+      let { books } = prevState;
+
+      books[books.indexOf(book)].shelf = toShelf;
+      // Update book on remote server
+      BooksAPI.update(book, toShelf);
+
+      return prevState;
+    });
+  }
+
   booksForShelf(shelf) {
     return this.state.books.filter((book) => book.shelf === shelf)
   }
@@ -33,14 +45,17 @@ class BooksApp extends React.Component {
           <div className="list-books-content">
             <Shelf
               books={this.booksForShelf('currentlyReading')}
+              onMoveToShelf={this.onMoveToShelf}
               title="Currently Reading" />
 
             <Shelf
               books={this.booksForShelf('wantToRead')}
+              onMoveToShelf={this.onMoveToShelf}
               title="Want to Read" />
 
             <Shelf
               books={this.booksForShelf('read')}
+              onMoveToShelf={this.onMoveToShelf}
               title="Read" />
           </div>
         </div>
